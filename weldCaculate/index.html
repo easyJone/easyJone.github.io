@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Tool</title>
+    <link rel="shortcut icon " type="images/x-icon" href="./img/favicon.ico">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="./js/vue.js"></script>
+    <!-- <script src="./js/vue.min.js"></script> -->
+    <script src="./js/element.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="page-wrap">
+        <div class="page-title">Heat Input Verification Tool for WPS reviewing</div>
+        <!-- ① -->
+        <el-descriptions title="① WPQR heat input random checking" direction="vertical" :column="4" size="medium"
+          border>
+          <el-descriptions-item content-class-name="custom-input">
+            <template slot="label">AMP电流(A)</template>
+            <el-input-number v-model.trim="amps" placeholder="" :controls="false" clearable></el-input-number>
+          </el-descriptions-item>
+          <el-descriptions-item content-class-name="custom-input">
+            <template slot="label">Volts电压（V）</template>
+            <el-input-number v-model.trim="volts" placeholder="" :controls="false" clearable></el-input-number>
+          </el-descriptions-item>
+          <el-descriptions-item content-class-name="custom-input">
+            <template slot="label">Traval speed（mm/min）</template>
+            <el-input-number v-model.trim="speed" placeholder="" :controls="false" clearable></el-input-number>
+          </el-descriptions-item>
+          <el-descriptions-item content-class-name="disable-input">
+            <template slot="label">Heat Input（KJ/MM）</template>
+            <el-input :value="heatInput" placeholder="" readonly></el-input>
+          </el-descriptions-item>
+        </el-descriptions>
+        <!-- ② -->
+        <el-descriptions title="② Averaging Caculator" direction="vertical" :column="4" size="medium"
+        border>
+        <div slot="title" class="description-title">
+          <span>② Averaging Caculator</span>
+          <el-button type="primary" icon="el-icon-plus" size="small" @click="addItem">新增</el-button>
+        </div>
+        <!-- <el-descriptions-item content-class-name="custom-input">
+          <template slot="label">AMP电流(A)</template>
+          <el-input-number v-model.trim="amps" placeholder="" :controls="false" clearable></el-input-number>
+        </el-descriptions-item>
+        <el-descriptions-item content-class-name="custom-input">
+          <template slot="label">Volts电压（V）</template>
+          <el-input-number v-model.trim="volts" placeholder="" :controls="false" clearable></el-input-number>
+        </el-descriptions-item>
+        <el-descriptions-item content-class-name="custom-input">
+          <template slot="label">Traval speed（mm/min）</template>
+          <el-input-number v-model.trim="speed" placeholder="" :controls="false" clearable></el-input-number>
+        </el-descriptions-item>
+        <el-descriptions-item content-class-name="disable-input">
+          <template slot="label">Heat Input（KJ/MM）</template>
+          <el-input :value="heatInput" placeholder="" readonly></el-input>
+        </el-descriptions-item> -->
+      </el-descriptions>
+
+      </div>
+    </div>
+    <script>
+      new Vue({
+        el: '#app',
+        data: function () {
+          return {
+            // ①
+            amps: undefined, // 电流
+            volts: undefined, // 电压
+            speed: undefined, // 速度
+            // ②
+
+          }
+        },
+        computed: {
+          heatInput () {
+            if ([this.amps, this.volts, this.speed].some(item => item === undefined)) {
+              return ''
+            }
+            return this.fixTwo(this.amps * this.volts * 6 / this.speed / 100)
+          }
+        },
+        methods: {
+          addItem () {
+
+          },
+          fixTwo (num) {
+            if (!num && num !== 0) return '--'
+            return Math.round(num * 100) / 100
+          }
+
+        }
+      })
+    </script>
+  </body>
+
+</html>

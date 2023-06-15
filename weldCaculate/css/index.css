@@ -1,0 +1,50 @@
+#app {
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+.page-wrap {
+  width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* 可输入区域 */
+.custom-input {
+  /* background: #FDE2E2; */
+}
+
+/* 自动计算结果区域 */
+.disable-input {
+  /* background: #E1F3D8; */
+}
+
+/* 描述列表自定义样式 */
+.el-descriptions {
+  margin-bottom: 30px;
+}
+.el-descriptions .el-descriptions-item__cell {
+  text-align: center !important;
+}
+
+.el-descriptions .el-input-number {
+  width: 100%;
+}
+
+.custom-input .el-input .el-input__inner {
+  background: #FDE2E2;
+}
+
+.disable-input .el-input .el-input__inner {
+  font-weight: bold !important;
+  text-align: center;
+  border: none;
+  background: #E1F3D8;
+}
