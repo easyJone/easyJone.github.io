@@ -16,20 +16,11 @@
   margin-bottom: 20px;
 }
 
-/* 可输入区域 */
-.custom-input {
-  /* background: #FDE2E2; */
-}
-
-/* 自动计算结果区域 */
-.disable-input {
-  /* background: #E1F3D8; */
-}
-
 /* 描述列表自定义样式 */
 .el-descriptions {
   margin-bottom: 30px;
 }
+
 .el-descriptions .el-descriptions-item__cell {
   text-align: center !important;
 }
@@ -38,13 +29,26 @@
   width: 100%;
 }
 
+/* -----②----- */
+.part-two .el-icon-circle-close {
+  font-size: 16px;
+}
+
+/* -----common----- */
+/* 可输入区域 */
 .custom-input .el-input .el-input__inner {
   background: #FDE2E2;
 }
 
+/* 自动计算结果区域 */
 .disable-input .el-input .el-input__inner {
   font-weight: bold !important;
   text-align: center;
   border: none;
   background: #E1F3D8;
+}
+
+.el-icon-circle-close {
+  color: #F56C6C;
+  cursor: pointer;
 }
