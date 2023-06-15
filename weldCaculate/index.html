@@ -32,8 +32,10 @@
             <el-input :value="heatInput" placeholder="" readonly></el-input>
           </el-descriptions-item>
         </el-descriptions>
+
         <!-- ② -->
-        <el-descriptions class="part-two" title="② Averaging Caculator" direction="vertical" :column="10" size="medium" border>
+        <el-descriptions class="part-two" title="② Averaging Caculator" direction="vertical" :column="10" size="medium"
+          border>
           <div slot="title" class="description-title">
             <span>② Averaging Caculator</span>
             <el-button type="primary" icon="el-icon-plus" size="small" @click="addItem">Add</el-button>
@@ -42,7 +44,8 @@
             <template slot="label">
               <i class="el-icon-circle-close" @click="secondDelete(index)"></i>
             </template>
-            <el-input-number v-model="AverageData[index].value" placeholder="" :controls="false" clearable></el-input-number>
+            <el-input-number v-model="AverageData[index].value" placeholder="" :controls="false"
+              clearable></el-input-number>
           </el-descriptions-item>
           <el-descriptions-item content-class-name="disable-input">
             <template slot="label">Average Value</template>
@@ -50,6 +53,155 @@
           </el-descriptions-item>
         </el-descriptions>
 
+        <!-- ③ -->
+        <div class="part-title">③ Permissible heat input range after average values from the WPQT.</div>
+        <el-table :data="tableData" style="width: 100%" stripe border>
+          <el-table-column align="center">
+            <template slot="header" slot-scope="scope">
+              <div style="font-weight: bold;">Permissible heat input range after average values from the WPQT.</div>
+              <div style="font-size: 13px;">(When not use for 2G+3G, either side can be filled. Leave the other side
+                blank.)</div>
+            </template>
+            <el-table-column align="center">
+              <template slot="header" slot-scope="scope">
+                <div class="align-center">
+                  <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                  <span style="margin: 0 7px 0;">Material SMYS >= 420Mpa: </span>
+                  <el-switch v-model="materialFlag" active-text="yes" inactive-text="no"></el-switch>
+                  <i class="el-icon-warning-outline" style="color: #E6A23C;margin-left: 45px;"></i>
+                  <span style="margin: 0 7px 0;">Deep Penetration fillet welds: </span>
+                  <el-switch v-model="deepFlag" active-text="yes" inactive-text="no"></el-switch>
+                </div>
+              </template>
+              <el-table-column label="2G - WPQR average heat input （KJ/MM）" align="center">
+                <el-table-column label="" prop="fillType" align="center">
+                </el-table-column>
+                <!-- 2G Min Scope -->
+                <el-table-column label="Min Scope" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="twoMinArr[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+                <!-- 2G输入 -->
+                <el-table-column label="Avg WPQR" prop="twoAvgWPQR" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.twoAvgWPQR" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+                <!-- 2G Max Scope -->
+                <el-table-column label="Max Scope" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="twoMaxArr[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column label="3G - WPQR average heat input （KJ/MM）" align="center">
+                <el-table-column label="" prop="fillType" align="center">
+                </el-table-column>
+                <!-- 3G Min Scope -->
+                <el-table-column label="Min Scope" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="threeMinArr[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+                <!-- 3G输入 -->
+                <el-table-column label="Avg WPQR" prop="threeAvgWPQR" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.threeAvgWPQR" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+                <!-- 3G Max Scope -->
+                <el-table-column label="Max Scope" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="threeMaxArr[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+            </el-table-column>
+          </el-table-column>
+        </el-table>
+
+        <!-- ④ -->
+        <div class="part-title">④ Judgement of the heat input range of WPS</div>
+        <el-table :data="tableData2" :span-method="spanMethod" style="width: 100%" stripe border>
+          <el-table-column align="center">
+            <template slot="header" slot-scope="scope">
+              <div style="font-weight: bold;">Judgement of the heat input range of WPS</div>
+            </template>
+            <el-table-column label="Position" prop="position" align="center"></el-table-column>
+            <el-table-column label="Pass No." prop="passNo" align="center"></el-table-column>
+            <el-table-column label="AMP电流（A）" align="center">
+              <el-table-column label="低L" class-name="group2" prop="ampMin" align="center">
+                <template slot-scope="{ row }">
+                  <el-input-number class="custom-input" v-model="row.ampMin" placeholder="" :controls="false"
+                    clearable></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column label="高H" class-name="group1" prop="ampMax" align="center">
+                <template slot-scope="{ row }">
+                  <el-input-number class="custom-input" v-model="row.ampMax" placeholder="" :controls="false"
+                    clearable></el-input-number>
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="VOLTS电压（V）" align="center">
+              <el-table-column label="低L" class-name="group2" prop="voltsMin" align="center">
+                <template slot-scope="{ row }">
+                  <el-input-number class="custom-input" v-model="row.voltsMin" placeholder="" :controls="false"
+                    clearable></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column label="高H" class-name="group1" prop="voltsMax" align="center">
+                <template slot-scope="{ row }">
+                  <el-input-number class="custom-input" v-model="row.voltsMax" placeholder="" :controls="false"
+                    clearable></el-input-number>
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="Traval speed（mm/min）" align="center">
+              <el-table-column label="低L" class-name="group1" prop="speedMin" align="center">
+                <template slot-scope="{ row }">
+                  <el-input-number class="custom-input" v-model="row.speedMin" placeholder="" :controls="false"
+                    clearable></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column label="高H" class-name="group2" prop="speedMax" align="center">
+                <template slot-scope="{ row }">
+                  <el-input-number class="custom-input" v-model="row.speedMax" placeholder="" :controls="false"
+                    clearable></el-input-number>
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="Heat Input（KJ/MM）" align="center">
+              <el-table-column label="低L" class-name="group2" align="center">
+                <template slot-scope="{ row, $index }">
+                  <el-input class="disable-input" :value="heatMinArr[$index]" placeholder="" readonly></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="高H" class-name="group1" align="center">
+                <template slot-scope="{ row, $index }">
+                  <el-input class="disable-input" :value="heatMaxArr[$index]" placeholder="" readonly></el-input>
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column label="Judgement" align="center">
+              <el-table-column label="低L" class-name="group2" align="center">
+                <template slot-scope="{ row, $index }">
+                  <el-input class="disable-input error-text" :class="{'success-text': judgementMinArr[$index]}" :value="judgementMinArr[$index] === '' ? '' : judgementMinArr[$index] ? 'OK' : 'Wrong'" placeholder="" readonly>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="高H" class-name="group1" align="center">
+                <template slot-scope="{ row, $index }">
+                  <el-input class="disable-input error-text" :class="{'success-text': judgementMaxArr[$index]}" :value="judgementMaxArr[$index] === '' ? '' : judgementMaxArr[$index] ? 'OK' : 'Wrong'" placeholder="" readonly>
+                  </el-input>
+                </template>
+              </el-table-column>
+            </el-table-column>
+          </el-table-column>
+        </el-table>
       </div>
     </div>
     <script>
@@ -70,12 +222,153 @@
               { value: undefined },
               { value: undefined },
               { value: undefined }
+            ],
+            // ③
+            materialFlag: true,
+            deepFlag: false,
+            tableData: [
+              {
+                fillType: 'Root',
+                twoAvgWPQR: undefined,
+                threeAvgWPQR: undefined,
+              },
+              {
+                fillType: 'Fill',
+                twoAvgWPQR: undefined,
+                threeAvgWPQR: undefined,
+              },
+              {
+                fillType: 'Cap',
+                twoAvgWPQR: undefined,
+                threeAvgWPQR: undefined,
+              }
+            ],
+            // ④
+            tableData2: [
+              {
+                position: '1G',
+                passNo: 'ROOT',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '1G',
+                passNo: 'FILL',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '1G',
+                passNo: 'CAP',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '2G',
+                passNo: 'ROOT',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '2G',
+                passNo: 'FILL',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '2G',
+                passNo: 'CAP',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '3G',
+                passNo: 'ROOT',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '3G',
+                passNo: 'FILL',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '3G',
+                passNo: 'CAP',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '4G',
+                passNo: 'ROOT',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '4G',
+                passNo: 'FILL',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: '4G',
+                passNo: 'CAP',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              }
             ]
 
 
           }
-        },
-        watch: {
         },
         computed: {
           // ① 结果
@@ -91,7 +384,125 @@
           // ② 结果
           averageValue () {
             const validData = this.AverageData.filter(item => item.value !== undefined)
+            if (!validData.length) return ''
             return this.fixTwo(validData.reduce((total, item) => total + item.value, 0) / validData.length)
+          },
+          // ③ 结果
+          twoMinArr () {
+            const result = []
+            const valueArr = this.tableData.map(item => item.twoAvgWPQR)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                result.push(this.fixTwo(val * (this.deepFlag ? 1 : 0.75)))
+              }
+            })
+            return result
+          },
+          twoMaxArr () {
+            const result = []
+            const valueArr = this.tableData.map(item => item.twoAvgWPQR)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                const curValue = this.materialFlag ? val * 1.1 : val >= 5 ? val * 1.1 : Math.min(val * 1.25, 5.5)
+                result.push(this.fixTwo(curValue))
+              }
+            })
+            return result
+          },
+          threeMinArr () {
+            const result = []
+            const valueArr = this.tableData.map(item => item.threeAvgWPQR)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                result.push(this.fixTwo(val * (this.deepFlag ? 1 : 0.75)))
+              }
+            })
+            return result
+          },
+          threeMaxArr () {
+            const result = []
+            const valueArr = this.tableData.map(item => item.threeAvgWPQR)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                const curValue = this.materialFlag ? val * 1.1 : val >= 5 ? val * 1.1 : Math.min(val * 1.25, 5.5)
+                result.push(this.fixTwo(curValue))
+              }
+            })
+            return result
+          },
+          heatMinArr () {
+            const result = []
+            const valueArr = this.tableData2.map(item => ({
+              ampMin: item.ampMin,
+              voltsMin: item.voltsMin,
+              speedMax: item.speedMax
+            }))
+            valueArr.forEach(item => {
+              const { ampMin, voltsMin, speedMax } = item
+              if ([ampMin, voltsMin, speedMax].some(val => val === undefined)) {
+                result.push('')
+              } else {
+                result.push(this.fixTwo(ampMin * voltsMin * 6 / speedMax / 100))
+              }
+            })
+            return result
+          },
+          heatMaxArr () {
+            const result = []
+            const valueArr = this.tableData2.map(item => ({
+              ampMax: item.ampMax,
+              voltsMax: item.voltsMax,
+              speedMin: item.speedMin
+            }))
+            valueArr.forEach(item => {
+              const { ampMax, voltsMax, speedMin } = item
+              if ([ampMax, voltsMax, speedMin].some(val => val === undefined)) {
+                result.push('')
+              } else {
+                result.push(this.fixTwo(ampMax * voltsMax * 6 / speedMin / 100))
+              }
+            })
+            return result
+          },
+          judgementMinArr () {
+            const result = []
+            const heatMinArr = [...this.heatMinArr]
+            heatMinArr.forEach((val, idx) => {
+              const heatMin = val
+              const rootIndex = idx % 3
+              const twoMin = this.twoMinArr[rootIndex]
+              const threeMin = this.threeMinArr[rootIndex]
+              if ([heatMin, twoMin, threeMin].some(item => !item && item !== 0)) {
+                result.push('')
+              } else {
+                result.push(heatMin >= Math.min(twoMin, threeMin))
+              }
+            })
+            return result
+          },
+          judgementMaxArr () {
+            const result = []
+            const heatMaxArr = [...this.heatMaxArr]
+            heatMaxArr.forEach((val, idx) => {
+              const heatMax = val
+              const rootIndex = idx % 3
+              const twoMax = this.twoMaxArr[rootIndex]
+              const threeMax = this.threeMaxArr[rootIndex]
+              if ([heatMax, twoMax, threeMax].some(item => !item && item !== 0)) {
+                result.push('')
+              } else {
+                result.push(heatMax <= Math.max(twoMax, threeMax))
+              }
+            })
+            return result
           }
         },
         methods: {
@@ -105,9 +516,24 @@
           },
           fixTwo (num) {
             if (!num && num !== 0) return '--'
-            return Math.round(num * 100) / 100
+            return Math.round(num * 10000) / 10000
+          },
+          // ④合并行
+          spanMethod ({ row, column, rowIndex, columnIndex }) {
+            if (columnIndex === 0) {
+              if (rowIndex % 3 === 0) {
+                return {
+                  rowspan: 3,
+                  colspan: 1
+                };
+              } else {
+                return {
+                  rowspan: 0,
+                  colspan: 0
+                };
+              }
+            }
           }
-
         }
       })
     </script>

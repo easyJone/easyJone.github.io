@@ -25,13 +25,21 @@
   text-align: center !important;
 }
 
-.el-descriptions .el-input-number {
-  width: 100%;
-}
-
 /* -----②----- */
 .part-two .el-icon-circle-close {
   font-size: 16px;
+}
+
+/* -----③----- */
+.el-switch__label {
+  color: #909399;
+}
+/* -----④----- */
+thead .group1 {
+  background: rgb(252, 228, 214) !important;
+}
+thead .group2 {
+  background: rgb(221, 235, 247) !important;
 }
 
 /* -----common----- */
@@ -40,15 +48,38 @@
   background: #FDE2E2;
 }
 
+.el-input-number {
+  width: 100%;
+}
+
 /* 自动计算结果区域 */
-.disable-input .el-input .el-input__inner {
+.disable-input .el-input__inner {
   font-weight: bold !important;
   text-align: center;
   border: none;
   background: #E1F3D8;
 }
 
+.part-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #303133;
+  margin: 30px 0 20px;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .el-icon-circle-close {
   color: #F56C6C;
   cursor: pointer;
+}
+.error-text .el-input__inner {
+  color: #F56C6C;
+}
+.success-text .el-input__inner {
+  color: #67C23A;
 }
