@@ -41,6 +41,36 @@ thead .group1 {
 thead .group2 {
   background: rgb(221, 235, 247) !important;
 }
+.third-tip {
+  color: #909399;
+  text-align: left;
+  padding-left: 20px;
+}
+.tip-item {
+  margin-left: 20px;
+}
+
+/* ⑤ */
+.general-tip {
+  margin-bottom: 10px;
+}
+.general-tip .tip-item {
+  margin-bottom: 5px;
+}
+.author-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.author-row .dnv-img {
+  width: 300px;
+  height: auto;
+}
+.author-row .point {
+  font-weight: bold;
+  color: #409EFF;
+}
+
 
 /* -----common----- */
 /* 可输入区域 */
