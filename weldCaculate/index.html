@@ -99,7 +99,7 @@
                   </template>
                 </el-table-column>
                 <!-- 2G Min Scope -->
-                <el-table-column label="Min Scope" align="center">
+                <el-table-column label="Min Scope" class-name="group2" align="center">
                   <template slot-scope="{ row, $index }">
                     <el-input class="disable-input" :value="twoMinArr[$index]" placeholder="" readonly></el-input>
                   </template>
@@ -112,7 +112,7 @@
                   </template>
                 </el-table-column>
                 <!-- 2G Max Scope -->
-                <el-table-column label="Max Scope" align="center">
+                <el-table-column label="Max Scope" class-name="group1" align="center">
                   <template slot-scope="{ row, $index }">
                     <el-input class="disable-input" :value="twoMaxArr[$index]" placeholder="" readonly></el-input>
                   </template>
@@ -122,7 +122,7 @@
                 <el-table-column label="" prop="fillType" align="center">
                 </el-table-column>
                 <!-- 3G Min Scope -->
-                <el-table-column label="Min Scope" align="center">
+                <el-table-column label="Min Scope" class-name="group2" align="center">
                   <template slot-scope="{ row, $index }">
                     <el-input class="disable-input" :value="threeMinArr[$index]" placeholder="" readonly></el-input>
                   </template>
@@ -135,7 +135,7 @@
                   </template>
                 </el-table-column>
                 <!-- 3G Max Scope -->
-                <el-table-column label="Max Scope" align="center">
+                <el-table-column label="Max Scope" class-name="group1" align="center">
                   <template slot-scope="{ row, $index }">
                     <el-input class="disable-input" :value="threeMaxArr[$index]" placeholder="" readonly></el-input>
                   </template>
