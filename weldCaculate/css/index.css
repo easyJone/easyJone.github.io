@@ -18,11 +18,11 @@
 
 /* 描述列表自定义样式 */
 .el-descriptions {
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 }
 
 .el-descriptions .el-descriptions__title {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
 }
 
@@ -108,10 +108,10 @@ thead .group2 {
 }
 
 .part-title {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
   color: #303133;
-  margin: 30px 0 20px;
+  margin: 50px 0 20px;
 }
 
 .align-center {
