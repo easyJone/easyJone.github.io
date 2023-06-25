@@ -79,7 +79,8 @@
                     <div class="third-tip" v-if="$index === 3">
                       <div>heat input:</div>
                       <div class="tip-item">
-                        - for nominal heat input ≤ 50 kJ/cm: change beyond ±25% or 55 kJ/cm maximum heat input, whichever is smaller.
+                        - for nominal heat input ≤ 50 kJ/cm: change beyond ±25% or 55 kJ/cm maximum heat input,
+                        whichever is smaller.
                       </div>
                       <div class="tip-item">
                         - for high heat input welding (> 50 kJ/cm): the change shall not be more than +10/-25%.
@@ -91,7 +92,8 @@
                         - for deep penetration fillet welds: the change shall not be more than -0/+25%.
                       </div>
                       <div class="tip-item">
-                        - The heat input range shall be established at least for (1) root pass and (2) filling and cap passes.
+                        - The heat input range shall be established at least for (1) root pass and (2) filling and cap
+                        passes.
                       </div>
 
                     </div>
@@ -147,62 +149,62 @@
 
         <!-- ④ -->
         <div class="part-title">④ Judgement of the heat input range of WPS</div>
-        <el-table :data="tableData2" :span-method="spanMethod2" style="width: 100%" border>
+        <el-table :data="tableData2" :span-method="spanMethod2" :cell-style="cellStyle" style="width: 100%" border>
           <el-table-column align="center">
             <template slot="header" slot-scope="scope">
               <div style="font-weight: bold;">Judgement of the heat input range of WPS</div>
             </template>
             <el-table-column label="Position" prop="position" align="center"></el-table-column>
             <el-table-column label="Pass No." prop="passNo" align="center"></el-table-column>
-            <el-table-column label="AMP电流（A）" align="center">
+            <el-table-column class-name="divide-line" label="AMP电流（A）" align="center">
               <el-table-column label="低L" class-name="group2" prop="ampMin" align="center">
                 <template slot-scope="{ row }">
                   <el-input-number class="custom-input" v-model="row.ampMin" placeholder="" :controls="false"
                     clearable></el-input-number>
                 </template>
               </el-table-column>
-              <el-table-column label="高H" class-name="group1" prop="ampMax" align="center">
+              <el-table-column label="高H" class-name="group1 divide-line" prop="ampMax" align="center">
                 <template slot-scope="{ row }">
                   <el-input-number class="custom-input" v-model="row.ampMax" placeholder="" :controls="false"
                     clearable></el-input-number>
                 </template>
               </el-table-column>
             </el-table-column>
-            <el-table-column label="VOLTS电压（V）" align="center">
+            <el-table-column class-name="divide-line" label="VOLTS电压（V）" align="center">
               <el-table-column label="低L" class-name="group2" prop="voltsMin" align="center">
                 <template slot-scope="{ row }">
                   <el-input-number class="custom-input" v-model="row.voltsMin" placeholder="" :controls="false"
                     clearable></el-input-number>
                 </template>
               </el-table-column>
-              <el-table-column label="高H" class-name="group1" prop="voltsMax" align="center">
+              <el-table-column label="高H" class-name="group1 divide-line" prop="voltsMax" align="center">
                 <template slot-scope="{ row }">
                   <el-input-number class="custom-input" v-model="row.voltsMax" placeholder="" :controls="false"
                     clearable></el-input-number>
                 </template>
               </el-table-column>
             </el-table-column>
-            <el-table-column label="Traval speed（mm/min）" align="center">
+            <el-table-column class-name="divide-line" label="Traval speed（mm/min）" align="center">
               <el-table-column label="低L" class-name="group1" prop="speedMin" align="center">
                 <template slot-scope="{ row }">
                   <el-input-number class="custom-input" v-model="row.speedMin" placeholder="" :controls="false"
                     clearable></el-input-number>
                 </template>
               </el-table-column>
-              <el-table-column label="高H" class-name="group2" prop="speedMax" align="center">
+              <el-table-column label="高H" class-name="group2 divide-line" prop="speedMax" align="center">
                 <template slot-scope="{ row }">
                   <el-input-number class="custom-input" v-model="row.speedMax" placeholder="" :controls="false"
                     clearable></el-input-number>
                 </template>
               </el-table-column>
             </el-table-column>
-            <el-table-column label="Heat Input（KJ/MM）" align="center">
+            <el-table-column class-name="divide-line" label="Heat Input（KJ/MM）" align="center">
               <el-table-column label="低L" class-name="group2" align="center">
                 <template slot-scope="{ row, $index }">
                   <el-input class="disable-input" :value="heatMinArr[$index]" placeholder="" readonly></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="高H" class-name="group1" align="center">
+              <el-table-column label="高H" class-name="group1 divide-line" align="center">
                 <template slot-scope="{ row, $index }">
                   <el-input class="disable-input" :value="heatMaxArr[$index]" placeholder="" readonly></el-input>
                 </template>
@@ -232,12 +234,16 @@
         <!-- ⑤ -->
         <div class="general-tip">
           <div class="part-title">Declaration</div>
-          <div class="tip-item"> - The result generated by the TOOL only for reference, please Judge according to the DNV rules.</div>
-          <div class="tip-item"> - The judgment logic and calculation formulas referenced in the TOOL refer to RU-SHIP-PT2-CH4-SEC5-5 & DNV-WPI-0292-APPENDIX F.4</div>
-          <div class="tip-item"> - The TOOL is used for judge the welding heat input for C and C-Mn steel, austenitic stainless steel or aluminum. For other materials with special requirements, please refer to the specific rules, e.g.  ferritic-austenitic stainless steel (duplex) (±15%）.</div>
+          <div class="tip-item"> - The result generated by the TOOL only for reference, please Judge according to the
+            DNV rules.</div>
+          <div class="tip-item"> - The judgment logic and calculation formulas referenced in the TOOL refer to
+            RU-SHIP-PT2-CH4-SEC5-5 & DNV-WPI-0292-APPENDIX F.4</div>
+          <div class="tip-item"> - The TOOL is used for judge the welding heat input for C and C-Mn steel, austenitic
+            stainless steel or aluminum. For other materials with special requirements, please refer to the specific
+            rules, e.g. ferritic-austenitic stainless steel (duplex) (±15%）.</div>
           <div class="author-row">
             <img src="./img//dnv.png" alt="" class="dnv-img">
-            <div>Any  questions, please contact: <span class="point">Zhongwei.Yin@dnv.com</span></div>
+            <div>Any questions, please contact: <span class="point">Zhongwei.Yin@dnv.com</span></div>
           </div>
         </div>
       </div>
@@ -249,9 +255,9 @@
           return {
             // ①
             firstInputList: [
+              { label: 'AMP电流(A)', value: undefined },
               { label: 'Volts电压（V）', value: undefined },
-              { label: 'Traval speed（mm/min）', value: undefined },
-              { label: 'Heat Input（KJ/MM）', value: undefined }
+              { label: 'Traval speed（mm/min)', value: undefined }
             ],
             // ②
             AverageData: [
@@ -521,10 +527,11 @@
               const rootIndex = idx % 3
               const twoMin = this.twoMinArr[rootIndex]
               const threeMin = this.threeMinArr[rootIndex]
-              if ([heatMin, twoMin, threeMin].some(item => !item && item !== 0)) {
+              if (!heatMin && heatMin !== 0) {
                 result.push('')
               } else {
-                result.push(heatMin >= Math.min(twoMin, threeMin))
+                const validData = [twoMin, threeMin].filter(item => item || item === 0) // 去掉未填写的数据
+                result.push(validData.length ? heatMin >= Math.min(...validData) : '')
               }
             })
             return result
@@ -537,10 +544,12 @@
               const rootIndex = idx % 3
               const twoMax = this.twoMaxArr[rootIndex]
               const threeMax = this.threeMaxArr[rootIndex]
-              if ([heatMax, twoMax, threeMax].some(item => !item && item !== 0)) {
+
+              if (!heatMax && heatMax !== 0) {
                 result.push('')
               } else {
-                result.push(heatMax <= Math.max(twoMax, threeMax))
+                const validData = [twoMax, threeMax].filter(item => item || item === 0) // 去掉未填写的数据
+                result.push(validData.length ? heatMax <= Math.max(...validData) : '')
               }
             })
             return result
@@ -590,6 +599,13 @@
           fixTwo (num) {
             if (!num && num !== 0) return '--'
             return Math.round(num * 10000) / 10000
+          },
+          // 列样式
+          cellStyle (data) {
+            if (data.columnIndex < 2) return ''
+            if (data.columnIndex % 2) {
+              return 'border-right: 1px solid rgb(140, 197, 255);'
+            }
           }
         }
       })
