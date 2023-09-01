@@ -18,6 +18,196 @@
   <body>
     <div id="app">
       <div class="page-wrap">
+        <div class="page-title">Qualified thickness range</div>
+        <!-- ⑥ -->
+        <el-radio-group class="btn-group" v-model="activeThicknessBtn">
+          <el-radio-button :label="1">Single-run</el-radio-button>
+          <el-radio-button :label="2">Multi-run</el-radio-button>
+        </el-radio-group>
+        <div v-show="activeThicknessBtn === 1">
+          <!-- ⑥-1 -->
+          <el-table :data="thicknessTableData" :span-method="spanMethodThickness" style="width: 100%" stripe border>
+            <el-table-column align="center">
+              <template slot="header" slot-scope="scope">
+                <div class="row middle-xs switch-item">
+                  <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                  <span style="margin: 0 7px 0;">Vertical downward welding: </span>
+                  <el-switch v-model="verticalDownwardFlag" active-text="yes" inactive-text="no"></el-switch>
+                </div>
+                <div class="row middle-xs switch-item">
+                  <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                  <span style="margin: 0 7px 0;">Three of the hardness values within 25 HV of the maximum permitted
+                    <span style="color: #67C23A;">①</span> : </span>
+                  <el-switch v-model="threePointsFlag" active-text="yes" inactive-text="no"></el-switch>
+                </div>
+                <div class="row middle-xs switch-item">
+                  <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                  <span style="margin: 0 7px 0;">Heat input > 50 kJ/cm: </span>
+                  <el-switch v-model="largeHeatInputFlag" active-text="yes" inactive-text="no"></el-switch>
+                </div>
+              </template>
+              <!-- 输入 -->
+              <el-table-column label="Thickness of Test piece(mm)" prop="thicknessNum" align="center">
+                <template slot-scope="{ row, $index }">
+                  <div class="third-tip" v-if="$index === 1">
+                    <div class="tip-item">
+                      <span><span style="color: #67C23A;">①</span>：the approval of maximum thickness of base metal for
+                        any technique shall be restricted to the thickness of test assembly if three of the hardness
+                        values in the heat affected zone on the tested macrosection are found to be within 25 HV of
+                        the maximum permitted, as stated in RU-SHIP-PT2-CH4-</span>
+                      <el-tooltip effect="light" placement="top" popper-class="cus-tooltip">
+                        <div slot="content">
+                          <div>
+                            <div>5.3.2 Hardness test:</div>
+                            <div class="tip-item">
+                              - for material grades up to and including NV 420 a maximum hardness limit of 350 HV10
+                              shall be met, except for single run fillet welds where the maximum hardness limit shall
+                              be 380 HV10.
+                            </div>
+                            <div class="tip-item">
+                              - for NV460 NV 500, NV 550, NV 620 and NV 690 grades the maximum hardness limit shall be
+                              420 HV10.
+                            </div>
+                            <div class="tip-item">
+                              - for NV 890 and NV 960, the maximum hardness limit shall be 450 HV10.
+                            </div>
+                            <div class="tip-item">
+                              For other grades and materials, the acceptance criteria shall be agreed.
+                            </div>
+                          </div>
+                        </div>
+                        <span style="color: #E6A23C;">[5.3.2]</span>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                  <el-input-number v-else class="custom-input" v-model="row.thicknessNum" placeholder=""
+                    :controls="false" clearable></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column label="Qualification range (mm)" align="center">
+                <el-table-column label="min" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="thicknessMinArr[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="max" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="thicknessMaxArr[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div v-show="activeThicknessBtn === 2">
+          <!-- ⑥-2 -->
+          <el-table :data="thicknessTableData2" :span-method="spanMethodThickness" style="width: 100%" stripe border>
+            <el-table-column align="center">
+              <template slot="header" slot-scope="scope">
+                <div class="row middle-xs switch-item">
+                  <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                  <span style="margin: 0 7px 0;">Vertical downward welding: </span>
+                  <el-switch v-model="verticalDownwardFlag2" active-text="yes" inactive-text="no"></el-switch>
+                </div>
+                <div class="row middle-xs switch-item">
+                  <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                  <span style="margin: 0 7px 0;">Three of the hardness values within 25 HV of the maximum permitted
+                    <span style="color: #67C23A;">①</span> : </span>
+                  <el-switch v-model="threePointsFlag2" active-text="yes" inactive-text="no"></el-switch>
+                </div>
+                <div class="row middle-xs switch-item">
+                  <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                  <span style="margin: 0 7px 0;">Additional charpy V-notch impact tests are carried out
+                    <span style="color: #67C23A;">②</span> : </span>
+                  <el-switch v-model="testDoneFlag2" active-text="yes" inactive-text="no"></el-switch>
+                </div>
+                <div class="row middle-xs switch-item">
+                  <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                  <span style="margin: 0 7px 0;">whether fracture mechanics test (CTOD) is required: </span>
+                  <el-switch v-model="ctodFlag2" active-text="yes" inactive-text="no"></el-switch>
+                </div>
+              </template>
+              <!-- 输入 -->
+              <el-table-column label="Thickness of Test piece(mm)" prop="thicknessNum" align="center">
+                <template slot-scope="{ row, $index }">
+                  <div class="third-tip" v-if="$index === 1">
+                    <div class="tip-item">
+                      <span><span style="color: #67C23A;">①</span>：the approval of maximum thickness of base metal for
+                        any technique shall be restricted to the thickness of test assembly if three of the hardness
+                        values in the heat affected zone on the tested macrosection are found to be within 25 HV of
+                        the maximum permitted, as stated in RU-SHIP-PT2-CH4-</span>
+                      <el-tooltip effect="light" placement="top" popper-class="cus-tooltip">
+                        <div slot="content">
+                          <div>
+                            <div>5.3.2 Hardness test:</div>
+                            <div class="tip-item">
+                              - for material grades up to and including NV 420 a maximum hardness limit of 350 HV10
+                              shall be met, except for single run fillet welds where the maximum hardness limit shall
+                              be 380 HV10.
+                            </div>
+                            <div class="tip-item">
+                              - for NV460 NV 500, NV 550, NV 620 and NV 690 grades the maximum hardness limit shall be
+                              420 HV10.
+                            </div>
+                            <div class="tip-item">
+                              - for NV 890 and NV 960, the maximum hardness limit shall be 450 HV10.
+                            </div>
+                            <div class="tip-item">
+                              For other grades and materials, the acceptance criteria shall be agreed.
+                            </div>
+                          </div>
+                        </div>
+                        <span style="color: #E6A23C;">[5.3.2]</span>
+                      </el-tooltip>
+                    </div>
+                    <div class="tip-item">
+                      <span><span style="color: #67C23A;">②</span>：for heat input ≤ 50 kJ/cm: WPQT on plates of
+                        thickness 25 mm to 50 mm will qualify WPS for maximum thickness 50 mm, unless Charpy V-notch
+                        impact tests are carried out at the location of WM and FL from the root area for one side
+                        welding or at the location of WM from the root area for both side welding. Alternatively, a
+                        WPS may be qualified up to 2 × t by carrying out WPT for the required additional Charpy
+                        V-notch tests from the root area. See note 1 and 2 in RU-SHIP-PT2-CH4-</span>
+                      <el-tooltip effect="light" placement="top" popper-class="cus-tooltip">
+                        <div slot="content">
+                          <div>
+                            <div class="tip-item">
+                              1）For test plate thickness 25 mm < t ≤ 50 mm and multi-run process, additional notch
+                                location FL from the root shall be added for qualification of plate thicknesses> 50 mm
+                                up to 2 × t, see note 7 in Table 9.
+                            </div>
+                            <div class="tip-item">
+                              2）For test plate thickness 25 mm < t ≤ 50 mm and multi-run process, additional notch
+                                location WM from the root shall be added for qualification of plate thicknesses> 50 mm
+                                up to 2 × t, see note 7 in Table 9.
+                            </div>
+                          </div>
+                        </div>
+                        <span style="color: #E6A23C;">Table 4</span>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                  <el-input-number v-else class="custom-input" v-model="row.thicknessNum" placeholder=""
+                    :controls="false" clearable></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column label="Qualification range (mm)" align="center">
+                <el-table-column label="min" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="thicknessMinArr2[$index]" placeholder=""
+                      readonly></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="max" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="thicknessMaxArr2[$index]" placeholder=""
+                      readonly></el-input>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+            </el-table-column>
+          </el-table>
+        </div>
+        <el-divider></el-divider>
         <div class="page-title">Heat Input Verification Tool for WPS reviewing</div>
         <!-- ① -->
         <el-descriptions title="① WPQR heat input random checking" direction="vertical" :column="4" size="medium"
@@ -52,184 +242,353 @@
             <el-input :value="averageValue" placeholder="" readonly></el-input>
           </el-descriptions-item>
         </el-descriptions>
-
-        <!-- ③ -->
-        <div class="part-title">③ Permissible heat input range after average values from the WPQT.</div>
-        <el-table :data="tableData" :span-method="spanMethod1" style="width: 100%" stripe border>
-          <el-table-column align="center">
-            <template slot="header" slot-scope="scope">
-              <div style="font-weight: bold;">Permissible heat input range after average values from the WPQT.</div>
-              <div style="font-size: 13px;">(When not use for 2G+3G, either side can be filled. Leave the other side
-                blank.)</div>
-            </template>
+        <!-- ③ + ④ -->
+        <el-radio-group class="btn-group" v-model="activeBtn">
+          <el-radio-button :label="1">For 2G+3G Position</el-radio-button>
+          <el-radio-button :label="2">For Any single Position</el-radio-button>
+        </el-radio-group>
+        <div v-show="activeBtn === 1">
+          <!-- ③-1 -->
+          <div class="part-title no-top">③ Permissible heat input range after average values from the WPQT.</div>
+          <el-table :data="tableDataThree" :span-method="spanMethod1" style="width: 100%" stripe border>
             <el-table-column align="center">
               <template slot="header" slot-scope="scope">
-                <div class="align-center">
-                  <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
-                  <span style="margin: 0 7px 0;">Material SMYS >= 420Mpa: </span>
-                  <el-switch v-model="materialFlag" active-text="yes" inactive-text="no"></el-switch>
-                  <i class="el-icon-warning-outline" style="color: #E6A23C;margin-left: 45px;"></i>
-                  <span style="margin: 0 7px 0;">Deep Penetration fillet welds: </span>
-                  <el-switch v-model="deepFlag" active-text="yes" inactive-text="no"></el-switch>
-                </div>
+                <div style="font-weight: bold;">Permissible heat input range after average values from the WPQT.</div>
+                <div style="font-size: 13px;">(For 2G+3G Position.)</div>
               </template>
-              <el-table-column label="2G - WPQR average heat input （KJ/MM）" align="center">
-                <el-table-column label="" prop="fillType" align="center">
-                  <template slot-scope="{ row, $index }">
-                    <div class="third-tip" v-if="$index === 3">
-                      <div>heat input:</div>
-                      <div class="tip-item">
-                        - for nominal heat input ≤ 50 kJ/cm: change beyond ±25% or 55 kJ/cm maximum heat input,
-                        whichever is smaller.
-                      </div>
-                      <div class="tip-item">
-                        - for high heat input welding (> 50 kJ/cm): the change shall not be more than +10/-25%.
-                      </div>
-                      <div class="tip-item">
-                        - for material with SMYS equal to or above 420 MPa: the change shall not be more than +10/-25%.
-                      </div>
-                      <div class="tip-item">
-                        - for deep penetration fillet welds: the change shall not be more than -0/+25%.
-                      </div>
-                      <div class="tip-item">
-                        - The heat input range shall be established at least for (1) root pass and (2) filling and cap
-                        passes.
-                      </div>
+              <el-table-column align="center">
+                <template slot="header" slot-scope="scope">
+                  <div class="row center-xs middle-xs">
+                    <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                    <span style="margin: 0 7px 0;">Material SMYS >= 420Mpa: </span>
+                    <el-switch v-model="materialFlag" active-text="yes" inactive-text="no"></el-switch>
+                    <i class="el-icon-warning-outline" style="color: #E6A23C;margin-left: 45px;"></i>
+                    <span style="margin: 0 7px 0;">Ferritic-austenitic stainless steel (duplex): </span>
+                    <el-switch v-model="stainlessFlag" active-text="yes" inactive-text="no"></el-switch>
+                  </div>
+                </template>
+                <el-table-column label="2G - WPQR average heat input （KJ/MM）" align="center">
+                  <el-table-column label="" prop="fillType" align="center">
+                    <template slot-scope="{ row, $index }">
+                      <div class="third-tip" v-if="$index === 3">
+                        <div>heat input:</div>
+                        <div class="tip-item">
+                          - for nominal heat input ≤ 50 kJ/cm: change beyond ±25% or 55 kJ/cm maximum heat input,
+                          whichever is smaller.
+                        </div>
+                        <div class="tip-item">
+                          - for high heat input welding (> 50 kJ/cm): the change shall not be more than +10/-25%.
+                        </div>
+                        <div class="tip-item">
+                          - for material with SMYS equal to or above 420 MPa: the change shall not be more than
+                          +10/-25%.
+                        </div>
+                        <div class="tip-item">
+                          - for ferritic-austenitic stainless steel (duplex) (±15%).
+                        </div>
+                        <div class="tip-item">
+                          The heat input range shall be established at least for (1) root pass and (2) filling and cap
+                          passes.
+                        </div>
+                        <div class="tip-item">
+                          * For deep penetration fillet welds, see RU-SHIP-PT2-CH4-[3.6.6]
+                        </div>
 
-                    </div>
-                    <span v-else>{{row.fillType}}</span>
-                  </template>
+                      </div>
+                      <span v-else>{{row.fillType}}</span>
+                    </template>
+                  </el-table-column>
+                  <!-- 2G Min Scope -->
+                  <el-table-column label="Min Scope" class-name="group2" align="center">
+                    <template slot-scope="{ row, $index }">
+                      <el-input class="disable-input" :value="twoMinArr[$index]" placeholder="" readonly></el-input>
+                    </template>
+                  </el-table-column>
+                  <!-- 2G输入 -->
+                  <el-table-column label="Avg WPQR" prop="twoAvgWPQR" align="center">
+                    <template slot-scope="{ row }">
+                      <el-input-number class="custom-input" v-model="row.twoAvgWPQR" placeholder="" :controls="false"
+                        clearable></el-input-number>
+                    </template>
+                  </el-table-column>
+                  <!-- 2G Max Scope -->
+                  <el-table-column label="Max Scope" class-name="group1" align="center">
+                    <template slot-scope="{ row, $index }">
+                      <el-input class="disable-input" :value="twoMaxArr[$index]" placeholder="" readonly></el-input>
+                    </template>
+                  </el-table-column>
                 </el-table-column>
-                <!-- 2G Min Scope -->
-                <el-table-column label="Min Scope" class-name="group2" align="center">
-                  <template slot-scope="{ row, $index }">
-                    <el-input class="disable-input" :value="twoMinArr[$index]" placeholder="" readonly></el-input>
-                  </template>
+                <el-table-column label="3G - WPQR average heat input （KJ/MM）" align="center">
+                  <el-table-column label="" prop="fillType" align="center">
+                  </el-table-column>
+                  <!-- 3G Min Scope -->
+                  <el-table-column label="Min Scope" class-name="group2" align="center">
+                    <template slot-scope="{ row, $index }">
+                      <el-input class="disable-input" :value="threeMinArr[$index]" placeholder="" readonly></el-input>
+                    </template>
+                  </el-table-column>
+                  <!-- 3G输入 -->
+                  <el-table-column label="Avg WPQR" prop="threeAvgWPQR" align="center">
+                    <template slot-scope="{ row }">
+                      <el-input-number class="custom-input" v-model="row.threeAvgWPQR" placeholder="" :controls="false"
+                        clearable></el-input-number>
+                    </template>
+                  </el-table-column>
+                  <!-- 3G Max Scope -->
+                  <el-table-column label="Max Scope" class-name="group1" align="center">
+                    <template slot-scope="{ row, $index }">
+                      <el-input class="disable-input" :value="threeMaxArr[$index]" placeholder="" readonly></el-input>
+                    </template>
+                  </el-table-column>
                 </el-table-column>
-                <!-- 2G输入 -->
-                <el-table-column label="Avg WPQR" prop="twoAvgWPQR" align="center">
+              </el-table-column>
+            </el-table-column>
+          </el-table>
+
+          <!-- ④-1 -->
+          <div class="part-title">④ Judgement of the heat input range of WPS</div>
+          <el-table :data="tableDataFour" :span-method="spanMethod2" :cell-style="cellStyle" style="width: 100%" border>
+            <el-table-column align="center">
+              <template slot="header" slot-scope="scope">
+                <div style="font-weight: bold;">Judgement of the heat input range of WPS</div>
+              </template>
+              <el-table-column label="Position" prop="position" align="center"></el-table-column>
+              <el-table-column label="Pass No." prop="passNo" align="center"></el-table-column>
+              <el-table-column class-name="divide-line" label="AMP电流（A）" align="center">
+                <el-table-column label="低L" class-name="group2" prop="ampMin" align="center">
                   <template slot-scope="{ row }">
-                    <el-input-number class="custom-input" v-model="row.twoAvgWPQR" placeholder="" :controls="false"
+                    <el-input-number class="custom-input" v-model="row.ampMin" placeholder="" :controls="false"
                       clearable></el-input-number>
                   </template>
                 </el-table-column>
-                <!-- 2G Max Scope -->
-                <el-table-column label="Max Scope" class-name="group1" align="center">
-                  <template slot-scope="{ row, $index }">
-                    <el-input class="disable-input" :value="twoMaxArr[$index]" placeholder="" readonly></el-input>
-                  </template>
-                </el-table-column>
-              </el-table-column>
-              <el-table-column label="3G - WPQR average heat input （KJ/MM）" align="center">
-                <el-table-column label="" prop="fillType" align="center">
-                </el-table-column>
-                <!-- 3G Min Scope -->
-                <el-table-column label="Min Scope" class-name="group2" align="center">
-                  <template slot-scope="{ row, $index }">
-                    <el-input class="disable-input" :value="threeMinArr[$index]" placeholder="" readonly></el-input>
-                  </template>
-                </el-table-column>
-                <!-- 3G输入 -->
-                <el-table-column label="Avg WPQR" prop="threeAvgWPQR" align="center">
+                <el-table-column label="高H" class-name="group1 divide-line" prop="ampMax" align="center">
                   <template slot-scope="{ row }">
-                    <el-input-number class="custom-input" v-model="row.threeAvgWPQR" placeholder="" :controls="false"
+                    <el-input-number class="custom-input" v-model="row.ampMax" placeholder="" :controls="false"
                       clearable></el-input-number>
                   </template>
                 </el-table-column>
-                <!-- 3G Max Scope -->
-                <el-table-column label="Max Scope" class-name="group1" align="center">
+              </el-table-column>
+              <el-table-column class-name="divide-line" label="VOLTS电压（V）" align="center">
+                <el-table-column label="低L" class-name="group2" prop="voltsMin" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.voltsMin" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+                <el-table-column label="高H" class-name="group1 divide-line" prop="voltsMax" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.voltsMax" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column class-name="divide-line" label="Traval speed（mm/min）" align="center">
+                <el-table-column label="低L" class-name="group1" prop="speedMin" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.speedMin" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+                <el-table-column label="高H" class-name="group2 divide-line" prop="speedMax" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.speedMax" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column class-name="divide-line" label="Heat Input（KJ/MM）" align="center">
+                <el-table-column label="低L" class-name="group2" align="center">
                   <template slot-scope="{ row, $index }">
-                    <el-input class="disable-input" :value="threeMaxArr[$index]" placeholder="" readonly></el-input>
+                    <el-input class="disable-input" :value="heatMinArr[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="高H" class-name="group1 divide-line" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="heatMaxArr[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column label="Judgement" align="center">
+                <el-table-column label="低L" class-name="group2" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input error-text" :class="{'success-text': judgementMinArr[$index]}"
+                      :value="judgementMinArr[$index] === '' ? '' : judgementMinArr[$index] ? 'OK' : 'Wrong'"
+                      placeholder="" readonly>
+                    </el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="高H" class-name="group1" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input error-text" :class="{'success-text': judgementMaxArr[$index]}"
+                      :value="judgementMaxArr[$index] === '' ? '' : judgementMaxArr[$index] ? 'OK' : 'Wrong'"
+                      placeholder="" readonly>
+                    </el-input>
                   </template>
                 </el-table-column>
               </el-table-column>
             </el-table-column>
-          </el-table-column>
-        </el-table>
+          </el-table>
+        </div>
+        <div v-show="activeBtn === 2">
+          <!-- ③-2 -->
+          <div class="part-title no-top">③ Permissible heat input range after average values from the WPQT.</div>
+          <el-table :data="tableDataThree2" :span-method="spanMethod1" style="width: 100%" stripe border>
+            <el-table-column align="center">
+              <template slot="header" slot-scope="scope">
+                <div style="font-weight: bold;">Permissible heat input range after average values from the WPQT.</div>
+                <div style="font-size: 13px;">(For Any single Positon)</div>
+              </template>
+              <el-table-column align="center">
+                <template slot="header" slot-scope="scope">
+                  <div class="row center-xs middle-xs">
+                    <i class="el-icon-warning-outline" style="color: #E6A23C;"></i>
+                    <span style="margin: 0 7px 0;">Material SMYS >= 420Mpa: </span>
+                    <el-switch v-model="materialFlag2" active-text="yes" inactive-text="no"></el-switch>
+                    <i class="el-icon-warning-outline" style="color: #E6A23C;margin-left: 45px;"></i>
+                    <span style="margin: 0 7px 0;">Ferritic-austenitic stainless steel (duplex): </span>
+                    <el-switch v-model="stainlessFlag2" active-text="yes" inactive-text="no"></el-switch>
+                  </div>
+                </template>
+                <el-table-column label="WPQR average heat input （KJ/MM）" align="center">
+                  <el-table-column label="" prop="fillType" align="center">
+                    <template slot-scope="{ row, $index }">
+                      <div class="third-tip" v-if="$index === 3">
+                        <div>heat input:</div>
+                        <div class="tip-item">
+                          - for nominal heat input ≤ 50 kJ/cm: change beyond ±25% or 55 kJ/cm maximum heat input,
+                          whichever is smaller.
+                        </div>
+                        <div class="tip-item">
+                          - for high heat input welding (> 50 kJ/cm): the change shall not be more than +10/-25%.
+                        </div>
+                        <div class="tip-item">
+                          - for material with SMYS equal to or above 420 MPa: the change shall not be more than
+                          +10/-25%.
+                        </div>
+                        <div class="tip-item">
+                          - for ferritic-austenitic stainless steel (duplex) (±15%).
+                        </div>
+                        <div class="tip-item">
+                          The heat input range shall be established at least for (1) root pass and (2) filling and cap
+                          passes.
+                        </div>
+                        <div class="tip-item">
+                          * For deep penetration fillet welds, see RU-SHIP-PT2-CH4-[3.6.6]
+                        </div>
 
-        <!-- ④ -->
-        <div class="part-title">④ Judgement of the heat input range of WPS</div>
-        <el-table :data="tableData2" :span-method="spanMethod2" :cell-style="cellStyle" style="width: 100%" border>
-          <el-table-column align="center">
-            <template slot="header" slot-scope="scope">
-              <div style="font-weight: bold;">Judgement of the heat input range of WPS</div>
-            </template>
-            <el-table-column label="Position" prop="position" align="center"></el-table-column>
-            <el-table-column label="Pass No." prop="passNo" align="center"></el-table-column>
-            <el-table-column class-name="divide-line" label="AMP电流（A）" align="center">
-              <el-table-column label="低L" class-name="group2" prop="ampMin" align="center">
-                <template slot-scope="{ row }">
-                  <el-input-number class="custom-input" v-model="row.ampMin" placeholder="" :controls="false"
-                    clearable></el-input-number>
-                </template>
-              </el-table-column>
-              <el-table-column label="高H" class-name="group1 divide-line" prop="ampMax" align="center">
-                <template slot-scope="{ row }">
-                  <el-input-number class="custom-input" v-model="row.ampMax" placeholder="" :controls="false"
-                    clearable></el-input-number>
-                </template>
-              </el-table-column>
-            </el-table-column>
-            <el-table-column class-name="divide-line" label="VOLTS电压（V）" align="center">
-              <el-table-column label="低L" class-name="group2" prop="voltsMin" align="center">
-                <template slot-scope="{ row }">
-                  <el-input-number class="custom-input" v-model="row.voltsMin" placeholder="" :controls="false"
-                    clearable></el-input-number>
-                </template>
-              </el-table-column>
-              <el-table-column label="高H" class-name="group1 divide-line" prop="voltsMax" align="center">
-                <template slot-scope="{ row }">
-                  <el-input-number class="custom-input" v-model="row.voltsMax" placeholder="" :controls="false"
-                    clearable></el-input-number>
-                </template>
+                      </div>
+                      <span v-else>{{row.fillType}}</span>
+                    </template>
+                  </el-table-column>
+                  <!-- Min Scope -->
+                  <el-table-column label="Min Scope" class-name="group2" align="center">
+                    <template slot-scope="{ row, $index }">
+                      <el-input class="disable-input" :value="twoMinArr2[$index]" placeholder="" readonly></el-input>
+                    </template>
+                  </el-table-column>
+                  <!-- 输入 -->
+                  <el-table-column label="Avg WPQR" prop="twoAvgWPQR" align="center">
+                    <template slot-scope="{ row }">
+                      <el-input-number class="custom-input" v-model="row.twoAvgWPQR" placeholder="" :controls="false"
+                        clearable></el-input-number>
+                    </template>
+                  </el-table-column>
+                  <!-- Max Scope -->
+                  <el-table-column label="Max Scope" class-name="group1" align="center">
+                    <template slot-scope="{ row, $index }">
+                      <el-input class="disable-input" :value="twoMaxArr2[$index]" placeholder="" readonly></el-input>
+                    </template>
+                  </el-table-column>
+                </el-table-column>
               </el-table-column>
             </el-table-column>
-            <el-table-column class-name="divide-line" label="Traval speed（mm/min）" align="center">
-              <el-table-column label="低L" class-name="group1" prop="speedMin" align="center">
-                <template slot-scope="{ row }">
-                  <el-input-number class="custom-input" v-model="row.speedMin" placeholder="" :controls="false"
-                    clearable></el-input-number>
-                </template>
+          </el-table>
+
+          <!-- ④-2 -->
+          <div class="part-title">④ Judgement of the heat input range of WPS</div>
+          <el-table :data="tableDataFour2" :span-method="spanMethod2" :cell-style="cellStyle" style="width: 100%"
+            border>
+            <el-table-column align="center">
+              <template slot="header" slot-scope="scope">
+                <div style="font-weight: bold;">Judgement of the heat input range of WPS</div>
+              </template>
+              <el-table-column label="Position" prop="position" align="center"></el-table-column>
+              <el-table-column label="Pass No." prop="passNo" align="center"></el-table-column>
+              <el-table-column class-name="divide-line" label="AMP电流（A）" align="center">
+                <el-table-column label="低L" class-name="group2" prop="ampMin" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.ampMin" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+                <el-table-column label="高H" class-name="group1 divide-line" prop="ampMax" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.ampMax" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
               </el-table-column>
-              <el-table-column label="高H" class-name="group2 divide-line" prop="speedMax" align="center">
-                <template slot-scope="{ row }">
-                  <el-input-number class="custom-input" v-model="row.speedMax" placeholder="" :controls="false"
-                    clearable></el-input-number>
-                </template>
+              <el-table-column class-name="divide-line" label="VOLTS电压（V）" align="center">
+                <el-table-column label="低L" class-name="group2" prop="voltsMin" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.voltsMin" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+                <el-table-column label="高H" class-name="group1 divide-line" prop="voltsMax" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.voltsMax" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column class-name="divide-line" label="Traval speed（mm/min）" align="center">
+                <el-table-column label="低L" class-name="group1" prop="speedMin" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.speedMin" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+                <el-table-column label="高H" class-name="group2 divide-line" prop="speedMax" align="center">
+                  <template slot-scope="{ row }">
+                    <el-input-number class="custom-input" v-model="row.speedMax" placeholder="" :controls="false"
+                      clearable></el-input-number>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column class-name="divide-line" label="Heat Input（KJ/MM）" align="center">
+                <el-table-column label="低L" class-name="group2" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="heatMinArr2[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="高H" class-name="group1 divide-line" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input" :value="heatMaxArr2[$index]" placeholder="" readonly></el-input>
+                  </template>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column label="Judgement" align="center">
+                <el-table-column label="低L" class-name="group2" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input error-text" :class="{'success-text': judgementMinArr2[$index]}"
+                      :value="judgementMinArr2[$index] === '' ? '' : judgementMinArr2[$index] ? 'OK' : 'Wrong'"
+                      placeholder="" readonly>
+                    </el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="高H" class-name="group1" align="center">
+                  <template slot-scope="{ row, $index }">
+                    <el-input class="disable-input error-text" :class="{'success-text': judgementMaxArr2[$index]}"
+                      :value="judgementMaxArr2[$index] === '' ? '' : judgementMaxArr2[$index] ? 'OK' : 'Wrong'"
+                      placeholder="" readonly>
+                    </el-input>
+                  </template>
+                </el-table-column>
               </el-table-column>
             </el-table-column>
-            <el-table-column class-name="divide-line" label="Heat Input（KJ/MM）" align="center">
-              <el-table-column label="低L" class-name="group2" align="center">
-                <template slot-scope="{ row, $index }">
-                  <el-input class="disable-input" :value="heatMinArr[$index]" placeholder="" readonly></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column label="高H" class-name="group1 divide-line" align="center">
-                <template slot-scope="{ row, $index }">
-                  <el-input class="disable-input" :value="heatMaxArr[$index]" placeholder="" readonly></el-input>
-                </template>
-              </el-table-column>
-            </el-table-column>
-            <el-table-column label="Judgement" align="center">
-              <el-table-column label="低L" class-name="group2" align="center">
-                <template slot-scope="{ row, $index }">
-                  <el-input class="disable-input error-text" :class="{'success-text': judgementMinArr[$index]}"
-                    :value="judgementMinArr[$index] === '' ? '' : judgementMinArr[$index] ? 'OK' : 'Wrong'"
-                    placeholder="" readonly>
-                  </el-input>
-                </template>
-              </el-table-column>
-              <el-table-column label="高H" class-name="group1" align="center">
-                <template slot-scope="{ row, $index }">
-                  <el-input class="disable-input error-text" :class="{'success-text': judgementMaxArr[$index]}"
-                    :value="judgementMaxArr[$index] === '' ? '' : judgementMaxArr[$index] ? 'OK' : 'Wrong'"
-                    placeholder="" readonly>
-                  </el-input>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table-column>
-        </el-table>
+          </el-table>
+        </div>
 
         <!-- ⑤ -->
         <div class="general-tip">
@@ -238,12 +597,12 @@
             DNV rules.</div>
           <div class="tip-item"> - The judgment logic and calculation formulas referenced in the TOOL refer to
             RU-SHIP-PT2-CH4-SEC5-5 & DNV-WPI-0292-APPENDIX F.4</div>
-          <div class="tip-item"> - The TOOL is used for judge the welding heat input for C and C-Mn steel, austenitic
-            stainless steel or aluminum. For other materials with special requirements, please refer to the specific
-            rules, e.g. ferritic-austenitic stainless steel (duplex) (±15%）.</div>
+          <div class="tip-item"> - Welding procedure qualification for <span style="font-weight: bold;">Aluminum, copper
+              alloys, repair of steel casting</span> are not covered by this tool.</div>
           <div class="author-row">
             <img src="./img//dnv.png" alt="" class="dnv-img">
-            <div>Any questions, please contact: <span class="point">Zhongwei.Yin@dnv.com</span></div>
+            <div>Any questions, please contact: <a href="mailto:Zhongwei.Yin@dnv.com"
+                class="point">Zhongwei.Yin@dnv.com</a></div>
           </div>
         </div>
       </div>
@@ -253,6 +612,8 @@
         el: '#app',
         data: function () {
           return {
+            activeThicknessBtn: 1,
+            activeBtn: 1,
             // ①
             firstInputList: [
               { label: 'AMP电流(A)', value: undefined },
@@ -267,10 +628,10 @@
               { value: undefined },
               { value: undefined }
             ],
-            // ③
-            materialFlag: true,
-            deepFlag: false,
-            tableData: [
+            // ③-1 第一组数据activeBtn = 1
+            materialFlag: false,
+            stainlessFlag: false,
+            tableDataThree: [
               {
                 fillType: 'Root',
                 twoAvgWPQR: undefined,
@@ -290,8 +651,8 @@
                 fillType: '123',
               }
             ],
-            // ④
-            tableData2: [
+            // ④-1 第一组数据activeBtn = 1
+            tableDataFour: [
               {
                 position: '1G',
                 passNo: 'ROOT',
@@ -412,8 +773,88 @@
                 speedMin: undefined,
                 speedMax: undefined
               }
-            ]
-
+            ],
+            // ③-2 第二组数据activeBtn = 2
+            materialFlag2: false,
+            stainlessFlag2: false,
+            tableDataThree2: [
+              {
+                fillType: 'Root',
+                twoAvgWPQR: undefined,
+                threeAvgWPQR: undefined,
+              },
+              {
+                fillType: 'Fill',
+                twoAvgWPQR: undefined,
+                threeAvgWPQR: undefined,
+              },
+              {
+                fillType: 'Cap',
+                twoAvgWPQR: undefined,
+                threeAvgWPQR: undefined,
+              },
+              {
+                fillType: '123',
+              }
+            ],
+            // ④-2 第二组数据activeBtn = 2
+            tableDataFour2: [
+              {
+                position: 'Either',
+                passNo: 'ROOT',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: 'Either',
+                passNo: 'FILL',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              },
+              {
+                position: 'Either',
+                passNo: 'CAP',
+                ampMin: undefined,
+                ampMax: undefined,
+                voltsMin: undefined,
+                voltsMax: undefined,
+                speedMin: undefined,
+                speedMax: undefined
+              }
+            ],
+            // ⑥-1
+            verticalDownwardFlag: false,
+            threePointsFlag: false,
+            largeHeatInputFlag: false,
+            thicknessTableData: [
+              {
+                thicknessNum: undefined
+              },
+              {
+                thicknessNum: 123
+              }
+            ],
+            // ⑥-2
+            verticalDownwardFlag2: false,
+            threePointsFlag2: false,
+            testDoneFlag2: false,
+            ctodFlag2: false,
+            thicknessTableData2: [
+              {
+                thicknessNum: undefined
+              },
+              {
+                thicknessNum: 123
+              }
+            ],
 
           }
         },
@@ -434,27 +875,27 @@
             if (!validData.length) return ''
             return this.fixTwo(validData.reduce((total, item) => total + item.value, 0) / validData.length)
           },
-          // ③ 结果
+          // ③-1 第一组数据activeBtn = 1
           twoMinArr () {
             const result = []
-            const valueArr = this.tableData.map(item => item.twoAvgWPQR)
+            const valueArr = this.tableDataThree.map(item => item.twoAvgWPQR)
             valueArr.forEach(val => {
               if (val === undefined) {
                 result.push('')
               } else {
-                result.push(this.fixTwo(val * (this.deepFlag ? 1 : 0.75)))
+                result.push(this.fixTwo(val * (this.stainlessFlag ? 0.85 : 0.75)))
               }
             })
             return result
           },
           twoMaxArr () {
             const result = []
-            const valueArr = this.tableData.map(item => item.twoAvgWPQR)
+            const valueArr = this.tableDataThree.map(item => item.twoAvgWPQR)
             valueArr.forEach(val => {
               if (val === undefined) {
                 result.push('')
               } else {
-                const curValue = this.materialFlag ? val * 1.1 : val >= 5 ? val * 1.1 : Math.min(val * 1.25, 5.5)
+                const curValue = this.materialFlag ? val * 1.1 : this.stainlessFlag ? val * 1.15 : val >= 5 ? val * 1.1 : Math.min(val * 1.25, 5.5)
                 result.push(this.fixTwo(curValue))
               }
             })
@@ -462,32 +903,33 @@
           },
           threeMinArr () {
             const result = []
-            const valueArr = this.tableData.map(item => item.threeAvgWPQR)
+            const valueArr = this.tableDataThree.map(item => item.threeAvgWPQR)
             valueArr.forEach(val => {
               if (val === undefined) {
                 result.push('')
               } else {
-                result.push(this.fixTwo(val * (this.deepFlag ? 1 : 0.75)))
+                result.push(this.fixTwo(val * (this.stainlessFlag ? 0.85 : 0.75)))
               }
             })
             return result
           },
           threeMaxArr () {
             const result = []
-            const valueArr = this.tableData.map(item => item.threeAvgWPQR)
+            const valueArr = this.tableDataThree.map(item => item.threeAvgWPQR)
             valueArr.forEach(val => {
               if (val === undefined) {
                 result.push('')
               } else {
-                const curValue = this.materialFlag ? val * 1.1 : val >= 5 ? val * 1.1 : Math.min(val * 1.25, 5.5)
+                const curValue = this.materialFlag ? val * 1.1 : this.stainlessFlag ? val * 1.15 : val >= 5 ? val * 1.1 : Math.min(val * 1.25, 5.5)
                 result.push(this.fixTwo(curValue))
               }
             })
             return result
           },
+          // ④-1 第一组数据activeBtn = 1
           heatMinArr () {
             const result = []
-            const valueArr = this.tableData2.map(item => ({
+            const valueArr = this.tableDataFour.map(item => ({
               ampMin: item.ampMin,
               voltsMin: item.voltsMin,
               speedMax: item.speedMax
@@ -504,7 +946,7 @@
           },
           heatMaxArr () {
             const result = []
-            const valueArr = this.tableData2.map(item => ({
+            const valueArr = this.tableDataFour.map(item => ({
               ampMax: item.ampMax,
               voltsMax: item.voltsMax,
               speedMin: item.speedMin
@@ -553,7 +995,150 @@
               }
             })
             return result
-          }
+          },
+          // ③-2 第二组数据activeBtn = 2
+          twoMinArr2 () {
+            const result = []
+            const valueArr = this.tableDataThree2.map(item => item.twoAvgWPQR)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                result.push(this.fixTwo(val * (this.stainlessFlag2 ? 0.85 : 0.75)))
+              }
+            })
+            return result
+          },
+          twoMaxArr2 () {
+            const result = []
+            const valueArr = this.tableDataThree2.map(item => item.twoAvgWPQR)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                const curValue = this.materialFlag2 ? val * 1.1 : this.stainlessFlag2 ? val * 1.15 : val >= 5 ? val * 1.1 : Math.min(val * 1.25, 5.5)
+                result.push(this.fixTwo(curValue))
+              }
+            })
+            return result
+          },
+          // ④-2 第二组数据activeBtn = 2
+          heatMinArr2 () {
+            const result = []
+            const valueArr = this.tableDataFour2.map(item => ({
+              ampMin: item.ampMin,
+              voltsMin: item.voltsMin,
+              speedMax: item.speedMax
+            }))
+            valueArr.forEach(item => {
+              const { ampMin, voltsMin, speedMax } = item
+              if ([ampMin, voltsMin, speedMax].some(val => val === undefined)) {
+                result.push('')
+              } else {
+                result.push(this.fixTwo(ampMin * voltsMin * 6 / speedMax / 100))
+              }
+            })
+            return result
+          },
+          heatMaxArr2 () {
+            const result = []
+            const valueArr = this.tableDataFour2.map(item => ({
+              ampMax: item.ampMax,
+              voltsMax: item.voltsMax,
+              speedMin: item.speedMin
+            }))
+            valueArr.forEach(item => {
+              const { ampMax, voltsMax, speedMin } = item
+              if ([ampMax, voltsMax, speedMin].some(val => val === undefined)) {
+                result.push('')
+              } else {
+                result.push(this.fixTwo(ampMax * voltsMax * 6 / speedMin / 100))
+              }
+            })
+            return result
+          },
+          judgementMinArr2 () {
+            const result = []
+            const heatMinArr = [...this.heatMinArr2]
+            heatMinArr.forEach((val, idx) => {
+              const heatMin = val
+              const rootIndex = idx % 3
+              const twoMin = this.twoMinArr2[rootIndex]
+              if (!heatMin && heatMin !== 0) {
+                result.push('')
+              } else {
+                const validData = [twoMin].filter(item => item || item === 0) // 去掉未填写的数据
+                result.push(validData.length ? heatMin >= Math.min(...validData) : '')
+              }
+            })
+            return result
+          },
+          judgementMaxArr2 () {
+            const result = []
+            const heatMaxArr = [...this.heatMaxArr2]
+            heatMaxArr.forEach((val, idx) => {
+              const heatMax = val
+              const rootIndex = idx % 3
+              const twoMax = this.twoMaxArr2[rootIndex]
+              if (!heatMax && heatMax !== 0) {
+                result.push('')
+              } else {
+                const validData = [twoMax].filter(item => item || item === 0) // 去掉未填写的数据
+                result.push(validData.length ? heatMax <= Math.max(...validData) : '')
+              }
+            })
+            return result
+          },
+          // ⑥-1
+          thicknessMinArr () {
+            const result = []
+            const valueArr = this.thicknessTableData.map(item => item.thicknessNum)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                result.push(val > 100 ? 'NA' : val * 0.7)
+              }
+            })
+            return result
+          },
+          thicknessMaxArr () {
+            const result = []
+            const valueArr = this.thicknessTableData.map(item => item.thicknessNum)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                result.push(this.verticalDownwardFlag ? val : this.threePointsFlag ? val : this.largeHeatInputFlag ? val : val > 100 ? 'NA' : val > 3 ? val * 1.1 : val * 1.3)
+              }
+            })
+            return result
+          },
+          // ⑥-2
+          thicknessMinArr2 () {
+            const result = []
+            const valueArr = this.thicknessTableData2.map(item => item.thicknessNum)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                result.push(val <= 3 ? val * 0.7 : val <= 12 ? 3 : this.ctodFlag2 ? 0.5 * val : val <= 100 ? 0.5 * val : 50)
+              }
+            })
+            return result
+          },
+          thicknessMaxArr2 () {
+            const result = []
+            const valueArr = this.thicknessTableData2.map(item => item.thicknessNum)
+            valueArr.forEach(val => {
+              if (val === undefined) {
+                result.push('')
+              } else {
+                result.push(this.verticalDownwardFlag2 ? val : this.threePointsFlag2 ? val : val <= 12 ? val * 2 : this.ctodFlag2 ? val * 1.1 : val >= 25 ? (val <= 50 ? (this.testDoneFlag2 ? val * 2 : 50) : val * 2) : val * 2)
+              }
+            })
+            return result
+          },
         },
         methods: {
           // ② 新增
@@ -587,6 +1172,21 @@
                 return {
                   rowspan: 3,
                   colspan: 1
+                }
+              } else {
+                return {
+                  rowspan: 0,
+                  colspan: 0
+                }
+              }
+            }
+          },
+          spanMethodThickness ({ row, column, rowIndex, columnIndex }) {
+            if (rowIndex === 1) {
+              if (columnIndex === 0) {
+                return {
+                  rowspan: 1,
+                  colspan: 4
                 }
               } else {
                 return {

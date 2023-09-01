@@ -22,7 +22,7 @@
 }
 
 .el-descriptions .el-descriptions__title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
 }
 
@@ -61,6 +61,9 @@ thead .group2 {
 
 .tip-item {
   margin-left: 20px;
+}
+.tip-item:not(:first-child) {
+  margin-top: 10px;
 }
 
 /* ⑤ */
@@ -107,17 +110,17 @@ thead .group2 {
   background: #E1F3D8;
 }
 
+.btn-group {
+  margin-bottom: 15px;
+}
 .part-title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   color: #303133;
   margin: 50px 0 20px;
 }
-
-.align-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.part-title.no-top {
+  margin-top: 0px;
 }
 
 .el-icon-circle-close {
@@ -131,4 +134,31 @@ thead .group2 {
 
 .success-text .el-input__inner {
   color: #67C23A;
+}
+.cus-tooltip {
+  max-width: 500px;
+}
+.el-divider--horizontal {
+  margin: 50px 0;
+}
+
+.switch-item {
+  text-align: left;
+  margin-left: 250px;
+}
+
+.row {
+  display: flex;
+}
+.center-xs {
+  justify-content: center;
+}
+.middle-xs {
+  align-items: center;
+}
+.flex-1 {
+  flex: 1;
+}
+.flex-2 {
+  flex: 2;
 }
