@@ -21,8 +21,8 @@
         <div class="page-title">Qualified thickness range</div>
         <!-- ⑥ -->
         <el-radio-group class="btn-group" v-model="activeThicknessBtn">
-          <el-radio-button :label="1">Single-run</el-radio-button>
-          <el-radio-button :label="2">Multi-run</el-radio-button>
+          <el-radio-button :label="1">Single run, or single run from both sides</el-radio-button>
+          <el-radio-button :label="2">Multi-run and all fillet welds</el-radio-button>
         </el-radio-group>
         <div v-show="activeThicknessBtn === 1">
           <!-- ⑥-1 -->
